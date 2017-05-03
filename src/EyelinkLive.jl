@@ -17,6 +17,10 @@ open_broadcast_connection = ccall((:eyelink_broadcast_open, "eyelink_core"), Int
 
 function get_newest_sample()
   sample = Eyelink.FSAMPLE()
+  get_newest_sample(sample)
+end
+
+function get_newest_sample!(sample::Eyelink.FSAMPLE)
   ret = ccall((:eyelink_newest_float_sample, "eyelink_core"), Int16, (Ptr{Void},),C_NULL)
   if ret > 0
     ret = ccall((:eyelink_newest_float_sample, "eyelink_core"), Int16, (Ptr{Eyelink.FSAMPLE},),sample)
