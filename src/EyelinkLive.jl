@@ -13,7 +13,16 @@ Open a connection to eyelink. `Mode` decides the type of connection
 """
 open_connection(mode::Int16) = ccall((:open_eyelink_connection, "eyelink_core"), Int16, (Int16,), mode)
 
-open_broadcast_connection = ccall((:eyelink_broadcast_open, "eyelink_core"), Int16, ())
+open_broadcast_connection() = ccall((:eyelink_broadcast_open, "eyelink_core"), Int16, ())
+
+function open_broadcast_connection(addr::IPv4)
+  #initialize the dll
+  ret = ccall((:set_eyelink_address, "eyelink_core"), Int16, (Cstring,), string(addr))
+  if ret != 0
+    return -1
+  end
+  open_broadcast_connection()
+end
 
 function get_newest_sample()
   sample = Eyelink.FSAMPLE()
